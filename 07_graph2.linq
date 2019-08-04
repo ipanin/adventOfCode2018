@@ -16,6 +16,10 @@ class Link {
 	public char End;
 }
 
+Link[] ParseData(string[] data) {
+	return data.Select(Link.Parse).ToArray();
+}
+
 class Node {
 	public char Name;
 	public int RemainingWork;
@@ -24,7 +28,7 @@ class Node {
 	
 	public Node(char name, int weight) {
 		Name = name;
-		RemainingWork = weight + name;
+		RemainingWork = weight + name - 'A' + 1;
 		WorkInProgress = false;
 		PrevNodes = new List<char>();
 	}
@@ -37,10 +41,6 @@ class Graph {
 	}
 	
 	public void AddLink(Link link) {
-//		var startNode = new Node(link.Start, _weight);
-//		Nodes.TryGetValue(link.Start, out startNode)
-//		Nodes[link.Start] = startNode;
-		
 		if (!Nodes.ContainsKey(link.Start))
 			Nodes[link.Start] = new Node(link.Start, _weight);
 
@@ -48,94 +48,69 @@ class Graph {
 			endNode = new Node(link.End, _weight);
 			Nodes[link.End] = endNode;
 		}
-		endNode.PrevNodes.Append(link.Start)
+		endNode.PrevNodes.Add(link.Start);
 	}
 	
 	public Dictionary<char, Node> Nodes;
 	private int _weight;
 }
 
-Link[] ParseData(string[] data) {
-	return data.Select(Link.Parse).ToArray();
-}
-
 class WorkerPool {
 	private Graph _graph;
-	private char[] _workers;
+	private List<Node> _workers;
+	private int _maxWorkersNumber;
 	public string Instructions = "";
 	public int TotalEffort = 0;
 	
 	public WorkerPool(Graph input, int number) {
 		_graph = input;
-		_workers = new char[number];
+		_workers = new List<Node>(number);
+		for (int i=0; i<number; i++)
+			_workers.Add(null);
+		_maxWorkersNumber = number;
 	}
 
 	public void Tick() {
-		var nodes = GetFreeNodes().OrderBy(nameof=>nameof.Name);
-		if (!nodes.Any())
-			return;
-		for(int i=0; i<_workers.Length; i++) {
-			if (_workers[i] == 0)
-				GetWork(i, nodes);
+		var availableNodesEnumerator = GetAvailableNodes().OrderBy(nameof=>nameof.Name).GetEnumerator();
+
+		for (int i = 0; i < _maxWorkersNumber; i++) {
+			if (_workers[i] == null || _workers[i].RemainingWork == 0) {
+				if (!availableNodesEnumerator.MoveNext())
+					return;
+				_workers[i] = availableNodesEnumerator.Current;
+				_workers[i].WorkInProgress = true;
+			}
 		}
 	}
 
 	public void Tok() {
 		TotalEffort++;
-		for (int i = 0; i < _workers.Length; i++) {
-			if (_workers[i] != 0) {
-				var nodeName = _workers[i];
-				if (--_graph.Nodes[nodeName].RemainingWork == 0) {
-					CompleteWork(nodeName);
-					_workers[i] = 0;
-				}
+		foreach(var node in _workers.Where(w=> w != null && w.RemainingWork != 0).OrderBy(w => w.Name)) {
+			if (--node.RemainingWork == 0) {
+				CompleteWork(node);
 			}
-		}
-
-		foreach (var w in _workers.Where(i => i.NodeName != 0).OrderBy(i => i.NodeName)) {
-			if (--w.RemainingWork == 0)
-				CompleteWork(w);
 		}
 	}
 
 	public bool Done() {
-		return !_links.Any();
+		return !_graph.Nodes.Any(n => n.Value.RemainingWork > 0);
 	}
 
-	private char GetFreeNode() {
-		for (char c = 'A'; c <= 'Z'; c++) {
-			if (_links.Any(l => l.Start == c) && !_links.Any(l => l.End == c) && !_workers.Any(w => w.NodeName == c))
-				return c;
-		}
-		return (char)0;
+	private IEnumerable<Node> GetAvailableNodes() {
+		return _graph.Nodes.Values.Where(n => !n.PrevNodes.Any() && !n.WorkInProgress && n.RemainingWork > 0);
 	}
 
-	private void GetWork(int worker) {
-		if (w.NodeName != 0)
-			w.RemainingWork = _weight + w.NodeName;
-	}
-
-	private void CompleteWork(Worker w) {
-		Instructions += w.NodeName;
-		if (_links.Count() > 1) {
-			var count = _links.RemoveAll(l => l.Start == w.NodeName);
-			w.NodeName = (char)0;
-		}
-		else {
-			//RemoveLinksStartingFromNode(_links, w.NodeName);
-			w.NodeName = (char)0;
-		}
-
+	private void CompleteWork(Node node) {
+		Instructions += node.Name;
+		_graph.Nodes.Values.ToList().ForEach(n => n.PrevNodes.Remove(node.Name));
 	}
 }
 
-void TestPart2(IEnumerable<Link> input, int weight, int numWorkers, string expectedInstruction, int expectedDuration) 
+void TestPart2(List<Link> input, int weight, int numWorkers, string expectedInstruction, int expectedDuration) 
 {
 	var graph = new Graph(weight);
-	foreach(var link in input) {
-		graph.AddLink(link);
-	}
-	
+	input.ForEach(graph.AddLink);
+
 	var workers = new WorkerPool(graph, numWorkers);
 	while (!workers.Done())
 	{
@@ -164,13 +139,12 @@ void Main() {
 			"Step F must be finished before step E can begin."
 	};
 	
-	var simpleInput = ParseData(simpleData);
+	var simpleInput = ParseData(simpleData).ToList();
 	
 	TestPart2(simpleInput, 0, 2,"CABFDE", 15);
 
 	var data = Advent.GetTestData("https://adventofcode.com/2018/day/7/input",
 			Advent.TestData2018CachePath + "07_input.txt");
-	var input = ParseData(data);
-	TestPart2(input, 60, 5, "", 0);
-
+	var input = ParseData(data).ToList();
+	TestPart2(input, 60, 5, "DFOYQTRVELPAUMXHKWSGZBCJIN", 1036);
 }
