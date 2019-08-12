@@ -24,39 +24,36 @@ int[][] Grid(int serial) {
 
 PowerSquare FindLargest(int[][] grid) {
 	var result = new PowerSquare { power = Int32.MinValue, coord = (0, 0), size = 0};
-	
-	for (int cellSize = 1; cellSize <= 300; cellSize++) {
-		var curr = FindLargest(grid, cellSize);
-		if (curr.power > result.power) {
-			result = curr;
+
+	for (int i = 0; i < H; i++) {
+		for (int j = 0; j < W; j++) {
+			int prevPower = 0;
+			for (int cellSize = 1; cellSize < H - i && cellSize < W - j; cellSize++) {
+				int power = prevPower + AnglePower(grid, i, j, cellSize);
+
+				if (power > result.power) {
+					result.power = power;
+					result.coord = (j + 1, i + 1);
+					result.size = cellSize;
+				}
+				prevPower = power;
+			}
 		}
-		if (cellSize % 3 == 0)
+		if (i % 3 == 0)
 			Console.Write('.');
 	}
+	
 	return result; 
 }
 
-PowerSquare FindLargest(int[][] grid, int cellSize) {
-	var result = new PowerSquare { power = Int32.MinValue, coord = (0, 0), size = 0 };
-	for (int i = 0; i < H - cellSize; i++) {
-		for (int j = 0; j < W - cellSize; j++) {
-			int power = SumPower(grid, i, j, cellSize);
-			if (power > result.power) {
-				result.power = power;
-				result.coord = (j + 1, i + 1);
-				result.size = cellSize;
-			}
-		}
-	}
-	return result;
-}
-
-int SumPower(int[][] grid, int pos_i, int pos_j, int cellSize) {
+int AnglePower(int[][] grid, int pos_i, int pos_j, int cellSize) {
 	int power = 0;
-	for (int i = pos_i; i < pos_i+cellSize; i++) {
-		for (int j = pos_j; j < pos_j+cellSize; j++) {
-			power += grid[i][j];
-		}
+	for (int i = pos_i; i < pos_i + cellSize; i++) {
+		power += grid[i][pos_j+cellSize-1];
+	}
+
+	for (int j = pos_j; j < pos_j + cellSize-1; j++) {
+		power += grid[pos_i+cellSize-1][j];
 	}
 	return power;
 }
