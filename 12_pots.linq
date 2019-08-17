@@ -20,7 +20,7 @@ void Main() {
 	rules = GetRules(input.Skip(2));
 	Test("Part 1", initial, rules, 20, 2736);
 
-	Test("Part 2", initial, rules, 50000000000, 3150000000905);
+	Test("Part 2", initial, rules, 50_000_000_000, 3150000000905);
 }
 
 // initial state: #..######..#....#####..
@@ -45,34 +45,35 @@ bool[] GetRules(IEnumerable<string> rules) {
 void Test(string testName, BitArray initial, bool[] rules, long numGenerations, long expectedSum) {
 	Console.WriteLine($"\n{testName}. Generations {numGenerations}.");
 
+	const long SustainableGeneraton = 125; // visually found that after g=125 picture only moves right
+	
 	int Len = initial.Length;
 	var generation = new BitArray(Len * 6, false);
-	for (int i = Len; i < 2 * Len; i++)
-		generation[i] = initial[i - Len];
+	for (int i = 0; i < Len; i++)
+		generation[i+Len] = initial[i];
 	PrintGeneration(0, generation, Len);
 
 	for (long g = 1; g <= numGenerations; g++) {
 		generation = NextGeneration(rules, generation);
 		PrintGeneration(g, generation, Len);
-		if (g == 125)
+		if (g == SustainableGeneraton) 
 			break;
 	}
 
 	long sum = 0; 
-	var count = 0;
+	var positiveCount = 0;
 	for (int i = 0; i < generation.Length; i++)
 		if (generation[i]) {
 			sum += i - Len;
-			count++;
+			positiveCount++;
 		}
 
 	if (numGenerations > 20)
-		sum = sum + (numGenerations - 125) * count;
+		sum = sum + (numGenerations - SustainableGeneraton) * positiveCount;
 
 	Console.WriteLine($"Sum={sum}");
 	if (sum != expectedSum)
 		Console.WriteLine($"Error: expected sum={expectedSum}");
-
 }
 
 void PrintGeneration(long num, BitArray generation, int Len) {
