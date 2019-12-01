@@ -23,7 +23,7 @@ string React(string formula)
 				newFormula.Append(a);
 		}
 		if (i == formula.Length)
-			newFormula.Append(b);
+			newFormula.Append(formula[formula.Length-1]);
 			
 		if (newFormula.Length == formula.Length)
 			break; // no reaction
@@ -39,12 +39,15 @@ string RemoveCaseInsensitive(string source, char c)
 }
 
 void Main() {
+	// var formula = "EfFMZFfzrRqQHhzpJjRrsSPZFfmVvAacOxXkKCcdxXcCulLeGgEIiZyGgYAaFfaAzaFuUfKkVvFNDdnGgnNGoOFfChaATtvVHcNgAaoOGJjrRq";
 	var formula = GetTestData(simple:false);
 	var f1 = React(formula);
 	Console.WriteLine($"Part 1. Formula length={f1.Length}"); // 11242
 	
 	int min = f1.Length;
 	for (char c='a'; c<='z'; c++) {
+		if (!f1.Contains(c) && !f1.Contains(char.ToUpper(c)))
+			continue;
 		var f2 = RemoveCaseInsensitive(f1, c);
 		var r = React(f2);
 		if (r.Length < min)
