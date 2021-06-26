@@ -3,39 +3,57 @@ using System.Net;
 using System.IO;
 
 namespace Aoc {
-	public static class Advent
+	public static class Utils
 	{
+		static string YearDir
+		{
+			get
+			{
+				var currentDir = Directory.GetCurrentDirectory();
+
+				while (!currentDir.EndsWith("2018"))
+				{
+					currentDir = Directory.GetParent(currentDir).FullName;
+				}
+
+				return currentDir;
+			}
+		}
+		
 		public static string[] GetTestStrings(string fileName)
 		{
-			if (!File.Exists(fileName))
+			var fullName = Path.Combine(YearDir, fileName);
+			if (!File.Exists(fullName))
 			{
-				throw new ArgumentException($"File '{fileName}' doesn't exist.", nameof(fileName));
+				throw new ArgumentException($"File '{fullName}' doesn't exist.", nameof(fileName));
 			}
 
-			return File.ReadAllLines(fileName);
+			return File.ReadAllLines(fullName);
 		}
 
 		public static string GetTestString(string url, string fileName)
 		{
-			if (!File.Exists(fileName))
+			var fullName = Path.Combine(YearDir, fileName);
+			if (!File.Exists(fullName))
 			{
-				throw new ArgumentException($"File '{fileName}' doesn't exist.", nameof(fileName));
+				throw new ArgumentException($"File '{fullName}' doesn't exist.", nameof(fileName));
 			}
 
-			return File.ReadAllText(fileName).TrimEnd();
+			return File.ReadAllText(fullName).TrimEnd();
 		}
 
 		public static string[] DownloadTestStringsWithCache(string url, string fileName)
 		{
-			if (!File.Exists(fileName))
+			var fullName = Path.Combine(YearDir, fileName);
+			if (!File.Exists(fullName))
 			{
-				var dir = Path.GetDirectoryName(fileName);
+				var dir = Path.GetDirectoryName(fullName);
 				if (!System.IO.Directory.Exists(dir))
 					throw new ArgumentException($"Directory '{dir}' doesn't exist.", nameof(fileName));
-				DownloadContent(url, fileName);
+				DownloadContent(url, fullName);
 			}
 
-			return File.ReadAllLines(fileName);
+			return File.ReadAllLines(fullName);
 		}
 
 		private static void DownloadContent(string address, string fileName) {

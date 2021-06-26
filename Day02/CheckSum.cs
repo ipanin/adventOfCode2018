@@ -1,18 +1,21 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using NUnit.Framework;
 
 namespace Aoc
 {
-	internal class Day02Solver : Solver<string[], string>
+	class Day02Solver
 	{
-		protected override string[] LoadData()
+		private static string[] LoadData(string fileName)
 		{
-			var testData = Advent.GetTestStrings(WorkingDir() + "/input.txt");
+			var testData = Utils.GetTestStrings(fileName);
 			return testData;
 		}
 
+		// for part 1
 		// luojygedpvsthptkxiwnaorzmq
-		static bool ContainsSame(string test, int count)
+		private static bool ContainsSame(string test, int count)
 		{
 			var dict = new Dictionary<char, int>();
 			foreach (var c in test)
@@ -32,7 +35,7 @@ namespace Aoc
 			return false;
 		}
 
-		protected override string Part1(string[] testData)
+		private static long Part1(IEnumerable<string> testData)
 		{
 			// count a*b, where
 			// a = number of strings that contains letter which appears exactly twice
@@ -48,12 +51,21 @@ namespace Aoc
 			}
 
 			//Console.WriteLine($"Checksum is: {A * B}"); //4712
-			return (a * b).ToString();
+			return a * b;
 		}
 
+		[TestCase("day02/input.txt", 4712)]
+		public void Part1Test(string fileName, long expected)
+		{
+			string[] testData = LoadData(fileName);
+			var answer = Part1(testData);
+			Assert.AreEqual(expected, answer, "Wrong answer");
+		}
+
+		// for part2
 		// s1=luojygedpvsthptkxiwnaorzmq
 		// Diff at one letter
-		bool Diff1(string s1, string s2, out string diff)
+		private static bool Diff1(string s1, string s2, out string diff)
 		{
 			var sb = new StringBuilder();
 			int diffLetters = 0;
@@ -71,7 +83,7 @@ namespace Aoc
 			return true;
 		}
 		
-		protected override string Part2(string[] testData)
+		private static string Part2(string[] testData)
 		{
 			foreach (var s1 in testData)
 			{
@@ -86,6 +98,14 @@ namespace Aoc
 			}
 
 			return "";
+		}
+		
+		[TestCase("day02/input.txt", "lufjygedpvfbhftxiwnaorzmq")]
+		public void Part2Test(string fileName, string expected)
+		{
+			string[] testData = LoadData(fileName);
+			var answer = Part2(testData);
+			Assert.AreEqual(expected, answer, "Wrong answer");
 		}
 	}
 }
