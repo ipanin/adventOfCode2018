@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Aoc {
+namespace Aoc.Day03 {
     class Day03Solver {
         private struct Claim {
             public int Id;
@@ -81,16 +81,16 @@ namespace Aoc {
             return 0;
         }
         
-        [TestCase("day03/sample.txt", 4)]
-        [TestCase("day03/input.txt", 105231)]
+        [TestCase("Day03/sample.txt", 4)]
+        [TestCase("Day03/input.txt", 105231)]
         public void Part1Test(string fileName, long expected) {
             var claims = LoadData(fileName);
             var answer = Part1(claims);
             Assert.AreEqual(expected, answer, "Wrong answer");
         }
 
-        [TestCase("day03/sample.txt", 3)]
-        [TestCase("day03/input.txt", 164)]
+        [TestCase("Day03/sample.txt", 3)]
+        [TestCase("Day03/input.txt", 164)]
         public void Part2Test(string fileName, int expected) {
             var claims = LoadData(fileName);
             var answer = Part2(claims);

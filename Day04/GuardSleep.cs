@@ -125,15 +125,15 @@ namespace Aoc.Day04 {
     }
 
     public class Day04Tests {
-        [TestCase("day04/sample.txt", 240)]
-        [TestCase("day04/input.txt", 85296)]
+        [TestCase("Day04/sample.txt", 240)]
+        [TestCase("Day04/input.txt", 85296)]
         public void Part1Test(string fileName, long expected) {
             var answer = Day04Solver.Part1(fileName);
             Assert.AreEqual(expected, answer, "Wrong answer");
         }
         
-        [TestCase("day04/sample.txt", 4455)]
-        [TestCase("day04/input.txt", 58559)]
+        [TestCase("Day04/sample.txt", 4455)]
+        [TestCase("Day04/input.txt", 58559)]
         public void Part2Test(string fileName, long expected) {
             var answer = Day04Solver.Part2(fileName);
             Assert.AreEqual(expected, answer, "Wrong answer");

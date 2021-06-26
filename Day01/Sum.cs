@@ -2,45 +2,30 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Aoc
+namespace Aoc.Day01
 {
-	class Day01Solver
-	{
-		private static long[] LoadData(string fileName)
-		{
+	static class Day01Solver {
+		public static long[] LoadData(string fileName) {
 			long[] testData = Utils.GetTestStrings(fileName)
 				.Select(long.Parse)
 				.ToArray();
-			
+
 			return testData;
 		}
 
-		[TestCase("day01/input.txt", 576)]
-		public void Part1Test(string fileName, long expected)
-		{
-			long[] testData = LoadData(fileName);
-			var answer = testData.Sum();
-			Assert.AreEqual(expected, answer, "Wrong answer");
-		}
-		
-		[TestCase("day01/input.txt", 77674)]
-		public void Part2Test(string fileName, long expected)
-		{
-			long[] testData = LoadData(fileName);
-			
+		public static long Part1(long[] testData) => testData.Sum();
+
+		public static long Part2(long[] testData) {
 			var sums = new HashSet<long>();
 			long sum = 0;
 			var scans = 0;
-			for (var i = 0;;)
-			{
+			for (var i = 0;;) {
 				sum += testData[i];
-				if (!sums.Add(sum))
-				{
+				if (!sums.Add(sum)) {
 					break; // already exist
 				}
 
-				if (++i >= testData.Length)
-				{
+				if (++i >= testData.Length) {
 					scans++;
 					i = 0;
 					//Console.WriteLine($"Sum={sum}");
@@ -48,8 +33,25 @@ namespace Aoc
 			}
 
 			//Console.WriteLine($"Found: {sum} after {scans} search(es)"); // 77674
+			return sum;
+		}
+	}
 
-			Assert.AreEqual(expected, sum, "Wrong answer");
+	class Day01Tests {
+		[TestCase("Day01/input.txt", 576)]
+		public void Part1Test(string fileName, long expected)
+		{
+			long[] testData = Day01Solver.LoadData(fileName);
+			var answer = Day01Solver.Part1(testData);
+			Assert.AreEqual(expected, answer, "Wrong answer");
+		}
+	
+		[TestCase("Day01/input.txt", "77674")]
+		public void Part2Test(string fileName, string expected)
+		{
+			long[] testData = Day01Solver.LoadData(fileName);
+			var answer = Day01Solver.Part2(testData);
+			Assert.AreEqual(expected, answer, "Wrong answer");
 		}
 	}
 }
