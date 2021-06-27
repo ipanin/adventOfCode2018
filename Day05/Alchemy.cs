@@ -1,18 +1,16 @@
 using System.Linq;
 using System.Text;
-using Aoc.Day04;
 using NUnit.Framework;
 
 namespace Aoc.Day05 {
-	class Day05Solver {
+	static class Day05Solver {
 		static string React(string formula) {
 			while (formula.Length > 1) {
 				var newFormula = new StringBuilder();
 				int i;
-				char b = '\0';
 				for (i = 1; i < formula.Length; i++) {
 					var a = formula[i - 1];
-					b = formula[i];
+					var b = formula[i];
 					if (a != b && char.ToLower(a) == char.ToLower(b))
 						i++;
 					else

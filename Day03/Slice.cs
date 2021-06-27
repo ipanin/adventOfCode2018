@@ -2,14 +2,17 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Aoc.Day03 {
-    class Day03Solver {
-        private struct Claim {
-            public int Id;
-            public int Left;
-            public int Top;
-            public int Width;
-            public int Height;
+namespace Aoc.Day03
+{
+    class Day03Solver
+    {
+        private struct Claim
+        {
+            public int id;
+            public int left;
+            public int top;
+            public int width;
+            public int height;
         }
 
         // #1281 @ 755,745: 10x19
@@ -18,7 +21,7 @@ namespace Aoc.Day03 {
                 .Split(new[] {' ', '#', '@', ',', ':', 'x'}, StringSplitOptions.RemoveEmptyEntries)
                 .Select(int.Parse)
                 .ToArray();
-            return new Claim {Id = nums[0], Left = nums[1], Top = nums[2], Width = nums[3], Height = nums[4]};
+            return new Claim {id = nums[0], left = nums[1], top = nums[2], width = nums[3], height = nums[4]};
         }
 
         private static Claim[] LoadData(string fileName) {
@@ -27,21 +30,21 @@ namespace Aoc.Day03 {
         }
 
         private static int[,] CreateFabric(Claim[] claims) {
-            int H = 0;
-            int W = 0;
+            int maxH = 0;
+            int maxW = 0;
             foreach (var claim in claims) {
-                var w = claim.Left + claim.Width;
-                var h = claim.Top + claim.Height;
-                if (w > W) W = w;
-                if (h > H) H = h;
+                var w = claim.left + claim.width;
+                var h = claim.top + claim.height;
+                if (w > maxW) maxW = w;
+                if (h > maxH) maxH = h;
             }
 
-            Console.WriteLine($"Full size: {W}x{H}"); //1000x999
+            Console.WriteLine($"Full size: {maxW}x{maxH}"); //1000x999
 
-            var list = new int[W, H];
+            var list = new int[maxW, maxH];
             foreach (var claim in claims)
-                for (int i = claim.Left; i < claim.Left + claim.Width; i++)
-                for (int j = claim.Top; j < claim.Top + claim.Height; j++)
+                for (int i = claim.left; i < claim.left + claim.width; i++)
+                for (int j = claim.top; j < claim.top + claim.height; j++)
                     list[i, j]++;
             return list;
         }
@@ -59,20 +62,20 @@ namespace Aoc.Day03 {
             //Console.WriteLine($"Intersection square= {square}"); // 105231
             return square;
         }
-        
+
         private static int Part2(Claim[] claims) {
             var list = CreateFabric(claims);
 
             foreach (var claim in claims) {
                 var single = true;
-                for (int i = claim.Left; i < claim.Left + claim.Width && single; i++)
-                for (int j = claim.Top; j < claim.Top + claim.Height && single; j++)
+                for (int i = claim.left; i < claim.left + claim.width && single; i++)
+                for (int j = claim.top; j < claim.top + claim.height && single; j++)
                     if (list[i, j] != 1)
                         single = false;
 
                 if (single) {
                     //Console.WriteLine($"Claim {claim.id} is OK"); // 164
-                    var answer = claim.Id;
+                    var answer = claim.id;
                     return answer;
                 }
             }
@@ -80,7 +83,7 @@ namespace Aoc.Day03 {
             Assert.Fail("Claim not found");
             return 0;
         }
-        
+
         [TestCase("Day03/sample.txt", 4)]
         [TestCase("Day03/input.txt", 105231)]
         public void Part1Test(string fileName, long expected) {

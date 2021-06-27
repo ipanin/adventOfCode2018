@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Aoc.Day06 {
-    class Point {
+namespace Aoc.Day06
+{
+    class Point
+    {
         public Point(int x, int y) {
             this.x = x;
             this.y = y;
@@ -19,11 +21,12 @@ namespace Aoc.Day06 {
         public int y;
     }
 
-    class FieldWithDistance {
-        private int[,] _field;
-        private int[,] _distance;
-        private int _sizeX;
-        private int _sizeY;
+    class FieldWithDistance
+    {
+        private readonly int[,] _field;
+        private readonly int[,] _distance;
+        private readonly int _sizeX;
+        private readonly int _sizeY;
 
         public FieldWithDistance(int maxX, int maxY) {
             _sizeX = maxX + 1;
@@ -83,13 +86,13 @@ namespace Aoc.Day06 {
             }
         }
 
-        public int GetLagestAreaSize() {
+        public int GetLargestAreaSize() {
             var areaSizes = new Dictionary<int, int>(); // coordN, size. size==-1 => inf
             for (var dy = 0; dy < _sizeY; dy++) {
                 for (var dx = 0; dx < _sizeX; dx++) {
                     var coordN = _field[dy, dx];
                     if (coordN == 0) continue;
-                    if (coordN == -1) throw new Exception($"uniniialized point ({dx},{dy})");
+                    if (coordN == -1) throw new Exception($"uninitialized point ({dx},{dy})");
                     if (!areaSizes.TryGetValue(coordN, out var sizeN))
                         sizeN = 0;
 
@@ -107,10 +110,11 @@ namespace Aoc.Day06 {
         }
     }
 
-    class Field {
-        private int[,] _field;
-        private int _sizeX;
-        private int _sizeY;
+    class Field
+    {
+        private readonly int[,] _field;
+        private readonly int _sizeX;
+        private readonly int _sizeY;
 
         public Field(int maxX, int maxY) {
             _sizeX = maxX + 1;
@@ -144,7 +148,8 @@ namespace Aoc.Day06 {
         }
     }
 
-    class Day06Solver {
+    static class Day06Solver
+    {
         public static Point[] LoadData(string fileName) {
             var testData = Utils.GetTestStrings(fileName);
             return testData.Select(Point.Parse).ToArray();
@@ -164,11 +169,10 @@ namespace Aoc.Day06 {
             }
 
             //field.PrintAlpha();
-            var answer = field.GetLagestAreaSize();
-            //Console.WriteLine($"Part 1. lagest size={answer}");
+            var answer = field.GetLargestAreaSize();
+            //Console.WriteLine($"Part 1. largest size={answer}");
             return answer;
         }
-
 
 
         public static int Part2(Point[] coords, int maxDistance) {
@@ -183,14 +187,16 @@ namespace Aoc.Day06 {
             return answer;
         }
     }
-    
-    
-    public class Day06Tests {
+
+
+    public class Day06Tests
+    {
         [TestCase("Day06/sample.txt", 17)]
         [TestCase("Day06/input.txt", 4011)]
         public void Part1Test(string fileName, int expected) {
             var coords = Day06Solver.LoadData(fileName);
             var answer = Day06Solver.Part1(coords);
+
             Assert.AreEqual(expected, answer, "Wrong answer");
         }
 
@@ -199,8 +205,8 @@ namespace Aoc.Day06 {
             var coords = Day06Solver.LoadData(fileName);
             var distance = Field.GetDistanceSum(new Point(4, 3), coords);
             Assert.AreEqual(expected, distance, "Error in GetDistanceSum() calculation");
-        } 
-        
+        }
+
         [TestCase("Day06/sample.txt", 32, 16)]
         [TestCase("Day06/input.txt", 10000, 46054)]
         public void Part2Test(string fileName, int maxDistance, int expected) {
