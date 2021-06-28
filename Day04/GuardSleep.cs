@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 
-namespace Aoc.Day04
+namespace AdventOfCode.Y2018.Day04
 {
     public enum GuardState
     {

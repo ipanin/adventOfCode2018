@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
-namespace Aoc.Day07 {
+namespace AdventOfCode.Y2018.Day07 {
 	class Link {
 		public Link(char start, char end) {
 			Start = start;

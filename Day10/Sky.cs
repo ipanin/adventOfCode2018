@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Aoc.Day10
+namespace AdventOfCode.Y2018.Day10
 {
     public class Point
     {

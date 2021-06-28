@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.IO;
 
-namespace Aoc {
+namespace AdventOfCode.Y2018 {
     public static class Utils {
         static string YearDir {
             get {

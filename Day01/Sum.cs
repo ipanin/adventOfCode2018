@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Aoc.Day01
+namespace AdventOfCode.Y2018.Day01
 {
     static class Day01Solver
     {
@@ -49,7 +49,7 @@ namespace Aoc.Day01
         }
 
         [TestCase("Day01/input.txt", "77674")]
-        public void Part2Test(string fileName, string expected) {
+        public void Part2Test(string fileName, long expected) {
             long[] testData = Day01Solver.LoadData(fileName);
             var answer = Day01Solver.Part2(testData);
             Assert.AreEqual(expected, answer, "Wrong answer");

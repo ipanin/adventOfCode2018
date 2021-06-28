@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Aoc.Day03
+namespace AdventOfCode.Y2018.Day03
 {
     class Day03Solver
     {

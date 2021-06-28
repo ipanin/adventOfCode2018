@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Aoc.Day09
+namespace AdventOfCode.Y2018.Day09
 {
 	public struct TestCase
 	{

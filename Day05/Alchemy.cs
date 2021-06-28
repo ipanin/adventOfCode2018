@@ -2,7 +2,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
-namespace Aoc.Day05 {
+namespace AdventOfCode.Y2018.Day05 {
 	static class Day05Solver {
 		static string React(string formula) {
 			while (formula.Length > 1) {

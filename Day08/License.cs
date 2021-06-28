@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
-namespace Aoc.Day08
+namespace AdventOfCode.Y2018.Day08
 {
     static class Day08Solver
     {
