@@ -1,5 +1,4 @@
-<Query Kind="Program" />
-
+/*
 const int W = 300;
 const int H = 300;
 
@@ -70,3 +69,4 @@ void Main() {
 
 	Test("My test", 5719, (21,34));
 }
+*/
