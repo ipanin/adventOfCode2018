@@ -23,6 +23,52 @@ namespace Aoc.Day09
 			};
 		}
 	}
+
+	internal class MarbleGame
+	{
+		private LinkedList<int> _circle;
+		private LinkedListNode<int> _currentMarble;
+
+		public long CalculateHiScore(int numPlayers, int numMarbles) {
+			_circle = new LinkedList<int>();
+			var players = new long[numPlayers];
+			
+			_circle.AddLast(0);
+			_currentMarble = _circle.First;
+
+			for (int marble = 1; marble <= numMarbles; marble++) {
+				players[marble % numPlayers] += DoMove(marble);
+			}
+
+			return players.Max();
+		}
+
+		private int DoMove(int marble) {
+			if (marble % 23 == 0) {
+				return marble + TakeMarble();
+			}
+
+			InsertMarble(marble);
+			return 0;
+		}
+
+		private void InsertMarble(int marble) {
+			_currentMarble = _circle.AddAfter(
+				_currentMarble.Next ?? _circle.First,
+				marble);
+		}
+
+		private int TakeMarble() {
+			for (int i = 0; i < 6; i++) {
+				_currentMarble = _currentMarble.Previous ?? _circle.Last;
+			}
+
+			var removeNode = _currentMarble.Previous ?? _circle.Last;
+			_circle.Remove(removeNode);
+
+			return removeNode.Value;
+		}
+	}
 	
 	static class Day09Solver
 	{
@@ -30,51 +76,12 @@ namespace Aoc.Day09
 			Console.Write($"[{DateTime.Now.ToLongTimeString()}] Calculate {numMarbles}. ");
 
 			var watch = Stopwatch.StartNew();
-			var hiScore = CalculateHiScore(numPlayers, numMarbles);
+			var game = new MarbleGame();
+			var hiScore = game.CalculateHiScore(numPlayers, numMarbles);
 			watch.Stop();
 
 			Console.WriteLine($"Elapsed: {watch.Elapsed}. HiScore = {hiScore}");
 			return hiScore;
-		}
-
-		static long CalculateHiScore(int numPlayers, int numMarbles) {
-			var players = new long[numPlayers];
-			var circle = new LinkedList<int>();
-
-			circle.AddLast(0);
-			var currentMarble = circle.First;
-
-			for (int marble = 1; marble <= numMarbles; marble++) {
-				players[marble % numPlayers] += DoMove(circle, ref currentMarble, marble);
-			}
-
-			return players.Max();
-		}
-
-		static int DoMove(LinkedList<int> circle, ref LinkedListNode<int> currentMarble, int marble) {
-			if (marble % 23 == 0) {
-				return marble + TakeMarble(circle, ref currentMarble);
-			}
-
-			InsertMarble(circle, ref currentMarble, marble);
-			return 0;
-		}
-
-		static void InsertMarble(LinkedList<int> circle, ref LinkedListNode<int> currentMarble, int marble) {
-			currentMarble = circle.AddAfter(
-				currentMarble.Next ?? circle.First,
-				marble);
-		}
-
-		static int TakeMarble(LinkedList<int> circle, ref LinkedListNode<int> currentMarble) {
-			for (int i = 0; i < 6; i++) {
-				currentMarble = currentMarble.Previous ?? circle.Last;
-			}
-
-			var removeNode = currentMarble.Previous ?? circle.Last;
-			circle.Remove(removeNode);
-
-			return removeNode.Value;
 		}
 	}
 
