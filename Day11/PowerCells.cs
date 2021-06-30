@@ -72,39 +72,43 @@ namespace AdventOfCode.Y2018.Day11
 		}
 		
 		public PowerSquare FindLargestSquare() {
-			int AnglePowerSum(int pos_i, int pos_j, int cellSize) {
-				int power = 0;
-				for (int i = pos_i; i < pos_i + cellSize; i++) {
-					power += _powerLevels[i, pos_j + cellSize - 1];
+			int AnglePowerSum(int pos_i, int pos_j, int cellSize, int prevPowerSum) {
+				int power = prevPowerSum;
+				int lastCol = pos_j + cellSize - 1;
+				int lastRow = pos_i + cellSize - 1;
+				
+				// sum right column
+				for (int i = pos_i; i <= lastRow; i++) {
+					power += _powerLevels[i, lastCol];
 				}
 
-				for (int j = pos_j; j < pos_j + cellSize - 1; j++) {
-					power += _powerLevels[pos_i + cellSize - 1, j];
+				// sum bottom row without last element
+				for (int j = pos_j; j < lastCol; j++) {
+					power += _powerLevels[lastRow, j];
 				}
 
 				return power;
 			}
 			
-			var result = new PowerSquare {power = int.MinValue, coord = (0, 0), size = 0};
+			var result = new PowerSquare {
+				power = int.MinValue, 
+				coord = (0, 0), 
+				size = 0
+			};
 
 			for (int i = 0; i < H; i++) {
 				for (int j = 0; j < W; j++) {
-					int prevPower = 0;
-					for (int cellSize = 1; cellSize < H - i && cellSize < W - j; cellSize++) {
-						int power = prevPower + AnglePowerSum(i, j, cellSize);
+					int power = 0;
+					for (int cellSize = 1; cellSize < Math.Min(H - i, W - j); cellSize++) {
+						power = AnglePowerSum(i, j, cellSize, power);
 
 						if (power > result.power) {
 							result.power = power;
 							result.coord = (j + 1, i + 1);
 							result.size = cellSize;
 						}
-
-						prevPower = power;
 					}
 				}
-
-				if (i % 3 == 0)
-					Console.Write('.');
 			}
 
 			return result;
