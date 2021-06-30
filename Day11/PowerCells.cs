@@ -6,7 +6,7 @@ namespace AdventOfCode.Y2018.Day11
 {
 	public struct PowerSquare
 	{
-		public (int, int) coord;
+		public (int x, int y) coord;
 		public int size;
 		public int power;
 	}
@@ -20,10 +20,12 @@ namespace AdventOfCode.Y2018.Day11
 		public PowerGrid(int serial) {
 			_powerLevels = new int[H,W];
 			
-			for (int y = 1; y <= H; y++) {
-				for (int x = 1; x <= W; x++) {
+			for (int i = 0; i < H; i++) {
+				for (int j = 0; j < W; j++) {
+					int y = i + 1;
+					int x = j + 1;
 					var rackId = x + 10;
-					_powerLevels[y-1, x-1] = (rackId * y + serial) * rackId % 1000 / 100 - 5;
+					_powerLevels[i, j] = (rackId * y + serial) * rackId % 1000 / 100 - 5;
 				}
 			}
 		}
@@ -36,11 +38,13 @@ namespace AdventOfCode.Y2018.Day11
 		}
 		
 		public PowerSquare FindMaxPowerSquare(int sideLength) {
-			int PowerSum(int x, int y, int sideLength) {
+			int PowerSum(int startx, int starty, int sideLength) {
+				int i0 = starty - 1;
+				int j0 = startx - 1;
 				int sum = 0;
-				for (int i = y-1; i < y-1+sideLength; i++) {
-					for (int j = x-1; j < x-1+sideLength; j++) {
-						sum += _powerLevels[i,j];
+				for (int i = i0; i < i0+sideLength; i++) {
+					for (int j = j0; j < j0+sideLength; j++) {
+						sum += _powerLevels[i, j];
 					}
 				}
 				return sum;
@@ -52,12 +56,14 @@ namespace AdventOfCode.Y2018.Day11
 				size = sideLength
 			};
 			
-			for (int i=0; i < H-sideLength; i++) {
+			for (int i = 0; i < H-sideLength; i++) {
 				for (int j = 0; j < W-sideLength; j++) {
-					int power = PowerSum(j+1, i+1, sideLength);
+					int x = j + 1;				
+					int y = i + 1;
+					int power = PowerSum(x, y, sideLength);
 					if (power > result.power) {
 						result.power = power;
-						result.coord = (j+1, i+1);
+						result.coord = (x, y);
 					}
 				}
 			}
@@ -117,10 +123,10 @@ namespace AdventOfCode.Y2018.Day11
 		[TestCase(18, "33,45", 29)]
 		[TestCase(42, "21,61", 30)]
 		[TestCase(5719, "21,34", 29)]
-		public void Part1Test(int serial, string expectedAnswer, int expectedPowerLevel) {
-			var grid = new PowerGrid(serial);
+		public void Part1Test(int input, string expectedAnswer, int expectedPowerLevel) {
+			var grid = new PowerGrid(input);
 			var max = grid.FindMaxPowerSquare(3);
-			string answer = $"{max.coord.Item1},{max.coord.Item1}";
+			string answer = $"{max.coord.x},{max.coord.y}";
 			Assert.AreEqual(expectedAnswer, answer, "Wrong answer");
 			Assert.AreEqual(expectedPowerLevel, max.power, "Wrong power sum");
 		}
@@ -128,17 +134,17 @@ namespace AdventOfCode.Y2018.Day11
 		[TestCase(18, "90,269,16", 113)]
 		[TestCase(42, "232,251,12", 119)]
 		[TestCase(5719, "90,244,16", 124)]
-		public void Part2Test(int serial, string expectedAnswer, int expectedPowerLevel) {
-			Console.WriteLine($"\nTest serial {serial}.");
+		public void Part2Test(int input, string expectedAnswer, int expectedPowerLevel) {
+			Console.WriteLine($"\nTest serial {input}.");
 			
 			var sw = Stopwatch.StartNew();
-			var grid = new PowerGrid(serial);
+			var grid = new PowerGrid(input);
 			var result = grid.FindLargestSquare();
 			sw.Stop();
 			
 			Console.WriteLine($"\n[{sw.Elapsed}] ");
 
-			string answer = $"{result.coord.Item1},{result.coord.Item2},{result.size}";
+			string answer = $"{result.coord.x},{result.coord.y},{result.size}";
 			Assert.AreEqual(expectedAnswer, answer, "Wrong answer");
 			Assert.AreEqual(expectedPowerLevel, result.power, "Wrong power sum");
 		}
