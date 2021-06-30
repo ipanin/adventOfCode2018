@@ -10,6 +10,8 @@
     <OutputType>Exe</OutputType>
 
     <RootNamespace>Aoc</RootNamespace>
+
+    <AssemblyName>AdventOfCode.Y2018</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
